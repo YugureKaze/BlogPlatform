@@ -34,7 +34,7 @@ public class Post {
     @Column(nullable = false)
     private Integer readingTime;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
@@ -51,13 +51,25 @@ public class Post {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
     @JoinTable(
             name = "post_tags",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tag.addPost(this);
+    }
+
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+        tag.removePost(this);
+    }
 
     @PreUpdate
     protected void preUpdate() {

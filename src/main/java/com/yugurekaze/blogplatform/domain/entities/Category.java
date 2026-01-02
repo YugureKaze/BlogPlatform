@@ -27,8 +27,18 @@ public class Category {
     @Column(nullable = false, length = 50, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+
+    public void addPost(Post post) {
+        posts.add(post);
+        post.setCategory(this);
+    }
+
+    public void removePost(Post post) {
+        posts.remove(post);
+        post.setCategory(null);
+    }
 
     @Override
     public final boolean equals(Object o) {

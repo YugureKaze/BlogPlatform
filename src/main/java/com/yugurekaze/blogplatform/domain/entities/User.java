@@ -17,6 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@ToString(exclude = {"password", "posts"})
 public class User {
 
     @Id
@@ -45,6 +46,16 @@ public class User {
     @PrePersist
     protected void prePersist() {
         createdAt = LocalDateTime.now();
+    }
+
+    public void addPost(Post post) {
+        posts.add(post);
+        post.setAuthor(this);
+    }
+
+    public void removePost(Post post) {
+        posts.remove(post);
+        post.setAuthor(null);
     }
 
     @Override
