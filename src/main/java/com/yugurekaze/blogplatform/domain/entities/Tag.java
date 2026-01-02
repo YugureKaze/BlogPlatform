@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.proxy.HibernateProxy;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "tags")
@@ -23,6 +22,15 @@ public class Tag {
 
     @Column(nullable = false, length = 50, unique = true)
     private String name;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Post> posts = new HashSet<>();
+
+    @PreRemove
+    protected void preRemove() {
+        posts.forEach(post -> post.getTags().remove(this));
+    }
+
 
     @Override
     public final boolean equals(Object o) {
