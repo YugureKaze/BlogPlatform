@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.proxy.HibernateProxy;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,6 +26,9 @@ public class Category {
 
     @Column(nullable = false, length = 50, unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private List<Post> posts = new ArrayList<>();
 
     @Override
     public final boolean equals(Object o) {
